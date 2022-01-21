@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.WebSockets;
 
-namespace WinBM.Server.Session
+namespace WinBM.Server.WebSocketConnect.Session
 {
     internal class SessionBase
     {

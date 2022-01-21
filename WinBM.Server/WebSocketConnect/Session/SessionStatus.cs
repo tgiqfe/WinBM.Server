@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WinBM.Server.Session
+namespace WinBM.Server.WebSocketConnect.Session
 {
     internal enum SessionStatus
     {
