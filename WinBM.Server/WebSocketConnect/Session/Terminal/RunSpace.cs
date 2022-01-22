@@ -12,16 +12,16 @@ namespace WinBM.Server.WebSocketConnect.Session.Terminal
 {
     internal class RunSpace : IDisposable
     {
-        private Process _process = null;
-        private CancellationTokenSource _outputTokenSource = new CancellationTokenSource();
-        private CancellationTokenSource _errorTokenSource = new CancellationTokenSource();
-        private object _outputLock = new object();
+        protected Process _process = null;
+        protected CancellationTokenSource _outputTokenSource = new CancellationTokenSource();
+        protected CancellationTokenSource _errorTokenSource = new CancellationTokenSource();
+        protected object _outputLock = new object();
 
-        private const int BUFF_SIZE = 4096;
+        protected const int BUFF_SIZE = 4096;
 
+        protected virtual string FileName { get; set; } = "cmd.exe";
+        protected virtual string Arguments { get; set; } = "";
 
-        public virtual string FileName { get; set; } = "cmd.exe";
-        public virtual string Arguments { get; set; } = "";
         public virtual WebSocket Ws { get; set; }
 
         public RunSpace() { }
@@ -51,6 +51,9 @@ namespace WinBM.Server.WebSocketConnect.Session.Terminal
             Dispose();
         }
 
+        protected virtual void RegisterOutputThread() { }
+
+        /*
         private void RegisterOutputThread()
         {
             Task.Run((Action)(() =>
@@ -77,6 +80,7 @@ namespace WinBM.Server.WebSocketConnect.Session.Terminal
                 catch { }
             }), _outputTokenSource.Token);
         }
+        */
 
         protected virtual void RegisterErrorThread()
         {
