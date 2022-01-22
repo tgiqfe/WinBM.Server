@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WinBM.Server.WebSocketConnect.Session
+namespace WinBM.Server.WebSocketConnect.Session.WinBM
 {
-    public class InitMessage
+    internal class WinBMMessage
     {
-        public MessageType MessageType { get; set; }
     }
 }

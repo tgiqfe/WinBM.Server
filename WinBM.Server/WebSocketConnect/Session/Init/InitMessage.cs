@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WinBM.Server.WebSocketConnect.Session
+namespace WinBM.Server.WebSocketConnect.Session.Init
 {
-    internal class RunSpace
+    public class InitMessage : SessionMessage
     {
+        
     }
 }

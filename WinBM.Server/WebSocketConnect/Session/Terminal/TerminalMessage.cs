@@ -6,20 +6,22 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.WebSockets;
 
-namespace WinBM.Server.WebSocketConnect.Session
+namespace WinBM.Server.WebSocketConnect.Session.Terminal
 {
-    public class CmdMessage : SessionMessage
+    public class TerminalMessage : SessionMessage
     {
-        public enum ConsoleType
-        {
-            StandardInput,
-            StandardOutput,
-            StandardError,
-        }
+        public override MessageType MessageType { get { return MessageType.Terminal; } }
+
+        public ConsoleType ConsoleType { get; set; }
+
+        public TerminalMessage() { }
+        
+
+
+
+
 
         #region Receiver side
-
-        public ConsoleType ReceiveType { get; set; }
 
         public async Task Process(WebSocket ws)
         {
@@ -42,8 +44,6 @@ namespace WinBM.Server.WebSocketConnect.Session
 
         #endregion
         #region Sender side
-
-        public ConsoleType SendType { get; set; }
 
 
 

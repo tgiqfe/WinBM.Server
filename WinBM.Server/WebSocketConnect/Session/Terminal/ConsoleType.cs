@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WinBM.Server.WebSocketConnect.Session
+namespace WinBM.Server.WebSocketConnect.Session.Terminal
 {
-    public enum MessageType
+    public enum ConsoleType
     {
         None,
-        Logon,
-        Init,
-        Terminal,
-        WinBM,
+        StandardInput,
+        StandardOutput,
+        StandardError,
     }
 }
