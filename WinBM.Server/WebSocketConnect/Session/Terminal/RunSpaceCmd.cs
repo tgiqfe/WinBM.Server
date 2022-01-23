@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net.WebSockets;
 
 namespace WinBM.Server.WebSocketConnect.Session.Terminal
 {
@@ -62,6 +63,51 @@ namespace WinBM.Server.WebSocketConnect.Session.Terminal
                 }
                 catch { }
             }, _outputTokenSource.Token);
+        }
+
+        protected override void RegisterErrorThread()
+        {
+            Task.Run(() =>
+            {
+                char[] buffer = new char[BUFF_SIZE];
+                try
+                {
+                    while (true)
+                    {
+                        if (_errorTokenSource.Token.IsCancellationRequested) { break; }
+                        int count = _process.StandardError.Read(buffer, 0, buffer.Length);
+                        lock (_outputLock)
+                        {
+                            string output = new string(buffer, 0, count);
+                            var terminal = new TerminalMessage()
+                            {
+                                ConsoleType = ConsoleType.StandardError,
+                                Content = output,
+                            };
+                            Output(terminal.GetPayload()).Wait();
+                        }
+                    }
+                }
+                catch { }
+            }, _errorTokenSource.Token);
+        }
+
+        protected override async Task Output(ArraySegment<byte> payload)
+        {
+            if (Ws != null && Ws.State == WebSocketState.Open)
+            {
+                await Ws.SendAsync(payload, WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
+
+        public override void Input(string command)
+        {
+            command = command.Trim();
+            inputLength = command.Length;
+            inputCount = 0;
+            isInit = false;
+            isEnter = true;
+            _process.StandardInput.WriteLine(command);
         }
     }
 }

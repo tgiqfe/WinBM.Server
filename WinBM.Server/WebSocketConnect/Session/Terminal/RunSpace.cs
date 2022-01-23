@@ -53,75 +53,11 @@ namespace WinBM.Server.WebSocketConnect.Session.Terminal
 
         protected virtual void RegisterOutputThread() { }
 
-        /*
-        private void RegisterOutputThread()
-        {
-            Task.Run((Action)(() =>
-            {
-                char[] buffer = new char[BUFF_SIZE];
-                try
-                {
-                    while (true)
-                    {
-                        if (_outputTokenSource.Token.IsCancellationRequested) { break; }
+        protected virtual void RegisterErrorThread() { }
 
-                        int count = _process.StandardOutput.Read(buffer, 0, buffer.Length);
-                        lock (_outputLock)
-                        {
-                            var terminal = new TerminalMessage()
-                            {
-                                ConsoleType = ConsoleType.StandardError,
-                                Content = new string(buffer, 0, count),
-                            };
-                            Output(terminal.GetPayload()).Wait();
-                        }
-                    }
-                }
-                catch { }
-            }), _outputTokenSource.Token);
-        }
-        */
+        protected virtual async Task Output(ArraySegment<byte> payload) { await Task.Run(() => { }); }
 
-        protected virtual void RegisterErrorThread()
-        {
-            Task.Run(() =>
-            {
-                char[] buffer = new char[BUFF_SIZE];
-                try
-                {
-                    while (true)
-                    {
-                        if (_errorTokenSource.Token.IsCancellationRequested) { break; }
-
-                        int count = _process.StandardError.Read(buffer, 0, buffer.Length);
-                        lock (_outputLock)
-                        {
-                            var terminal = new TerminalMessage()
-                            {
-                                ConsoleType = ConsoleType.StandardError,
-                                Content = new string(buffer, 0, count),
-                            };
-                            Output(terminal.GetPayload()).Wait();
-                        }
-                    }
-                }
-                catch { }
-            }, _errorTokenSource.Token);
-        }
-
-        protected virtual async Task Output(ArraySegment<byte> output)
-        {
-            if (Ws != null && Ws.State == WebSocketState.Open)
-            {
-                await Ws.SendAsync(output, WebSocketMessageType.Text, true, CancellationToken.None);
-            }
-        }
-
-        public virtual void Input(string command)
-        {
-            _process.StandardInput.WriteLine(command.Trim());
-        }
-
+        public virtual void Input(string command) { }
 
         #region Disposable
 
@@ -133,7 +69,10 @@ namespace WinBM.Server.WebSocketConnect.Session.Terminal
             {
                 if (disposing)
                 {
-
+                    _outputTokenSource.Cancel();
+                    _errorTokenSource.Cancel();
+                    _process?.Close();
+                    Console.ResetColor();
                 }
                 disposedValue = true;
             }

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace WinBM.Server.WebSocketConnect.Session.Terminal
 {
-    internal class RunSpacePowerShell
+    internal class RunSpacePowerShell : RunSpaceCmd
     {
+        protected override string FileName { get; set; } = "powershell.exe";
     }
 }
