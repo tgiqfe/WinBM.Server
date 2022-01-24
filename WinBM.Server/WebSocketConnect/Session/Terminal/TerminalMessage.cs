@@ -23,24 +23,6 @@ namespace WinBM.Server.WebSocketConnect.Session.Terminal
 
         #region Receiver side
 
-        public async Task Process(WebSocket ws)
-        {
-            ArraySegment<byte> buff = new ArraySegment<byte>(new byte[1024]);
-            while (ws.State == WebSocketState.Open)
-            {
-                WebSocketReceiveResult ret = await ws.ReceiveAsync(buff, CancellationToken.None);
-                if (ret.MessageType == WebSocketMessageType.Text)
-                {
-
-
-
-                }
-                else if (ret.MessageType == WebSocketMessageType.Close)
-                {
-                    break;
-                }
-            }
-        }
 
         #endregion
         #region Sender side
